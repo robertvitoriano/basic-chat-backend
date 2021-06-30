@@ -8,13 +8,16 @@ import morgan from 'morgan';
 const app = express();
 const server = http.createServer(app);
 const io = socketio(server);
+
 app.use(morgan('tiny'));
 
 app.use(cors());
 
 io.on("connect", (socket) => {
-  console.log("New client connected");
-  console.log(socket.id);
+  console.log("New client connected ",socket.id)
+
+  io.emit('clientConnected', {id:socket.id})
+
   socket.on("disconnect", () => {
     console.log("Client disconnected");
   });
