@@ -14,9 +14,20 @@ app.use(morgan('tiny'));
 app.use(cors());
 
 io.on("connect", (socket) => {
-  console.log("New client connected ",socket.id)
+  socket.emit("connected",{clientId:socket.id})
 
-  io.emit('clientConnected', {id:socket.id})
+  io.emit('clientConnected', {clientId:socket.id})
+
+  socket.on('sendMessage', (data)=>{
+
+    const { clientId, message } = data
+
+    io.emit('messageSent',{message, clientId})
+
+
+  })
+
+
 
   socket.on("disconnect", () => {
     console.log("Client disconnected");
