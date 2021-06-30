@@ -22,15 +22,17 @@ io.on("connect", (socket) => {
 
     const { clientId, message } = data
 
-    io.emit('messageSent',{message, clientId})
+    io.emit('message',{message, clientId})
+
+    socket.broadcast.emit('userJoined',{message:'A new user has joined', username:'user', clientId})
 
 
   })
 
 
 
-  socket.on("disconnect", () => {
-    console.log("Client disconnected");
+  socket.on("disconnect", (socket) => {
+    io.emit('userLeft',{message:'A new user has joined', username:'user', clientId:socket.id
   });
 });
 
