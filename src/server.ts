@@ -18,11 +18,13 @@ io.on("connect", (socket) => {
 
   io.emit('clientConnected', {clientId:socket.id})
 
-  socket.on('sendMessage', (data)=>{
+  socket.on('sendMessage', (data, callback)=>{
 
     const { clientId, message } = data
 
     io.emit('message',{message, clientId})
+
+    callback('delivered')
 
     socket.broadcast.emit('userJoined',{message:'A new user has joined', username:'user', clientId})
   })
