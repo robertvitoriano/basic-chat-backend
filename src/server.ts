@@ -25,17 +25,15 @@ io.on("connect", (socket) => {
     io.emit('message',{message, clientId})
 
     socket.broadcast.emit('userJoined',{message:'A new user has joined', username:'user', clientId})
-
-
   })
 
-
-
+  socket.on('sendLocation',({latitude, logintude})=>{
+    socket.broadcast.emit('userLocation',{clientId:socket.id, location:{latitude, logintude}})
+  })
   socket.on("disconnect", (socket) => {
     io.emit('userLeft',{message:'A new user has joined', username:'user', clientId:socket.id
   });
 });
-
 
 
 server.listen(4000,()=>{
