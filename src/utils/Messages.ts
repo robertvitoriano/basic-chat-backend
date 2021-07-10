@@ -1,14 +1,23 @@
+import dayjs from "dayjs"
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
 import IMessage from "../interfaces/IMessage"
+
 class Messages {
 
- public generateMessage = (message:string): IMessage => {
+  constructor() {
+    dayjs.extend(utc)
+    dayjs.extend(timezone)
+  }
 
-    return{
+  public generateMessage = (message: string): IMessage => {
+
+    return {
       message,
-      timestamp: new Date().getTime()
+      timestamp: dayjs().tz('America/Sao_Paulo').format('DD/MM/YYYY')
     }
   }
-  
+
 }
 
 
