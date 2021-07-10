@@ -14,13 +14,10 @@ class Messages {
 
     return {
       message,
-      timestamp: dayjs().tz('America/Sao_Paulo').format('DD/MM/YYYY')
+      timestamp: dayjs().tz('America/Sao_Paulo').format('HH:mm')
     }
   }
 
 }
-
-
-
 
 export default new Messages()
