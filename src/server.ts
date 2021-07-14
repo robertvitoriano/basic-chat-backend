@@ -42,6 +42,18 @@ io.on("connect", (socket) => {
     })
   })
 
+  socket.on('join',({username, room})=>{
+
+    socket.join(room)
+
+   socket.emit('message', Messages.generateMessage('Welcome'))
+   socket.broadcast.to(room).emit('message',Messages.generateMessage(`${username} has joined !`))
+
+
+
+
+  })
+
 
   socket.on("disconnect", (socket) => {
     io.emit('userLeft', {
