@@ -26,8 +26,8 @@ io.on("connect", (socket) => {
 
   })
 
-  socket.on('sendLocation', ({ latitude, logintude }) => {
-    socket.broadcast.emit('userLocation', {
+  socket.on('sendLocation', ({ latitude, logintude, room }) => {
+    io.to(room).emit('userLocation', {
       clientId: socket.id,
       location: { latitude, logintude }
     })
@@ -42,9 +42,8 @@ io.on("connect", (socket) => {
 
   })
 
-
-  socket.on("disconnect", (socket) => {
-    io.emit('userLeft', {
+  socket.on("disconnect", ({room}) => {
+    io.to(room).emit('userLeft', {
       message: 'A new user has joined',
       username: 'user',
       clientId: socket.id
