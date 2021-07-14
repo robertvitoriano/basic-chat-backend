@@ -14,22 +14,13 @@ app.use(cors());
 
 io.on("connect", (socket) => {
 
-  socket.broadcast.emit('userJoined', {
-    message: 'A new user has joined',
-    username: 'user',
-    clientId: socket.id,
-    timestamp: new Date().getTime()
-  })
-
   socket.emit("connected", { clientId: socket.id })
-
-  io.emit('clientConnected', { clientId: socket.id })
 
   socket.on('sendMessage', (data, callback) => {
 
-    const { clientId, message, username } = data
+    const { clientId, message, username, room } = data
 
-    io.emit('message', Messages.generateMessage(message))
+    io.to(room).emit('message', Messages.generateMessage(message))
 
     callback('delivered')
 
@@ -42,15 +33,12 @@ io.on("connect", (socket) => {
     })
   })
 
-  socket.on('join',({username, room})=>{
+  socket.on('join', ({ username, room }) => {
 
     socket.join(room)
 
-   socket.emit('message', Messages.generateMessage('Welcome'))
-   socket.broadcast.to(room).emit('message',Messages.generateMessage(`${username} has joined !`))
-
-
-
+    socket.emit('message', Messages.generateMessage('Welcome'))
+    socket.broadcast.to(room).emit('message', Messages.generateMessage(`${username} has joined !`))
 
   })
 
