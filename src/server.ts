@@ -19,7 +19,15 @@ io.on("connect", (socket) => {
 
   socket.on('join', ({ username, room }) => {
 
-    Users.addUser({ username, room, id: socket.id })
+    try{
+
+      Users.addUser({ username, room, id: socket.id })
+
+    }catch(e){
+
+      console.error(e)
+
+    }
 
     socket.join(room)
 
@@ -59,7 +67,7 @@ io.on("connect", (socket) => {
       username: 'user',
       clientId: socket.id
     });
-    
+
     Users.removeUser({id:socket.id})
 
   })
