@@ -19,23 +19,23 @@ io.on("connect", (socket) => {
 
   socket.on('join', ({ username, room }, callback) => {
 
-    try{
+    try {
 
-      Users.addUser({ username, room, id: socket.id })
+      const user = Users.addUser({ username, room, id: socket.id })
 
-    }catch(e){
+      socket.join(user.room)
+      socket.emit('message', Messages.generateMessage('Welcome'))
+      socket.broadcast.to(user.room).emit('message', Messages.generateMessage(`${user.username} has joined !`))
+
+      callback('Joined successfully !')
+
+    } catch (e) {
 
       console.error(e)
-      
+
       callback(e)
 
     }
-
-    socket.join(room)
-
-    socket.emit('message', Messages.generateMessage('Welcome'))
-
-    socket.broadcast.to(room).emit('message', Messages.generateMessage(`${username} has joined !`))
 
   })
 
@@ -51,7 +51,7 @@ io.on("connect", (socket) => {
 
   })
 
-  socket.on('sendLocation', ({ latitude, logintude}) => {
+  socket.on('sendLocation', ({ latitude, logintude }) => {
 
     const user = Users.getUser({ id: socket.id })
 
@@ -63,7 +63,7 @@ io.on("connect", (socket) => {
   })
 
   socket.on("disconnect", () => {
-    const user = Users.getUser({ id: socket.id })
+   const user =  Users.removeUser({ id: socket.id })
 
     io.to(user.room).emit('userLeft', {
       message: 'A new user has joined',
@@ -71,7 +71,6 @@ io.on("connect", (socket) => {
       clientId: socket.id
     });
 
-    Users.removeUser({id:socket.id})
 
   })
 

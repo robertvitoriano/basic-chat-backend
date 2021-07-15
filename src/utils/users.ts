@@ -35,8 +35,9 @@ class Users {
 
     const userToRemoveIndex = this.users.findIndex(user => user.id === id)
 
-    this.users.splice(userToRemoveIndex, 1)
-
+   const  user = this.users.splice(userToRemoveIndex, 1)
+   
+   return user[0]
   }
 
   public getUser = (id) => {
