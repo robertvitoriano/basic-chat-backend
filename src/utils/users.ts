@@ -31,7 +31,7 @@ class Users {
   }
 
 
-  public removeUser = (id) => {
+  public removeUser = ({ id }) => {
 
     const userToRemoveIndex = this.users.findIndex(user => user.id === id)
 
@@ -40,7 +40,7 @@ class Users {
    return user[0]
   }
 
-  public getUser = (id) => {
+  public getUser = ({ id }) => {
 
     const user = this.users.find((user) => user.id == id)
 

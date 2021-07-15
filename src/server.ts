@@ -63,13 +63,18 @@ io.on("connect", (socket) => {
   })
 
   socket.on("disconnect", () => {
-   const user =  Users.removeUser({ id: socket.id })
+    const user = Users.removeUser({ id: socket.id })
 
-    io.to(user.room).emit('userLeft', {
-      message: 'A new user has joined',
-      username: 'user',
-      clientId: socket.id
-    });
+    if (user) {
+      
+      io.to(user.room).emit('userLeft', {
+        message: 'A new user has joined',
+        username: 'user',
+        clientId: socket.id
+      });
+
+    }
+
 
 
   })
