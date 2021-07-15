@@ -66,16 +66,10 @@ io.on("connect", (socket) => {
     const user = Users.removeUser({ id: socket.id })
 
     if (user) {
-      
-      io.to(user.room).emit('userLeft', {
-        message: 'A new user has joined',
-        username: 'user',
-        clientId: socket.id
-      });
+
+      io.to(user.room).emit('userLeft', Messages.generateMessage(`${user.username} has left ! `));
 
     }
-
-
 
   })
 
