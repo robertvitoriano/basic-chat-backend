@@ -17,7 +17,7 @@ io.on("connect", (socket) => {
 
   socket.emit("connected", { clientId: socket.id })
 
-  socket.on('join', ({ username, room }) => {
+  socket.on('join', ({ username, room }, callback) => {
 
     try{
 
@@ -26,6 +26,8 @@ io.on("connect", (socket) => {
     }catch(e){
 
       console.error(e)
+      
+      callback(e)
 
     }
 
@@ -50,7 +52,7 @@ io.on("connect", (socket) => {
   })
 
   socket.on('sendLocation', ({ latitude, logintude}) => {
-    
+
     const user = Users.getUser({ id: socket.id })
 
     io.to(user.room).emit('userLocation', {
