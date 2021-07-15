@@ -7,6 +7,7 @@ const app = express();
 const server = http.createServer(app);
 const io = socketio(server);
 import Messages from './utils/Messages'
+import Users from './utils/users'
 
 app.use(morgan('tiny'));
 
@@ -16,38 +17,51 @@ io.on("connect", (socket) => {
 
   socket.emit("connected", { clientId: socket.id })
 
+  socket.on('join', ({ username, room }) => {
+
+    Users.addUser({ username, room, id: socket.id })
+
+    socket.join(room)
+
+    socket.emit('message', Messages.generateMessage('Welcome'))
+
+    socket.broadcast.to(room).emit('message', Messages.generateMessage(`${username} has joined !`))
+
+  })
+
   socket.on('sendMessage', (data, callback) => {
 
-    const { clientId, message, username, room } = data
+    const { clientId, message, username } = data
 
-    io.to(room).emit('message', Messages.generateMessage(message))
+    const user = Users.getUser({ id: socket.id })
+
+    io.to(user.room).emit('message', Messages.generateMessage(message))
 
     callback('delivered')
 
   })
 
-  socket.on('sendLocation', ({ latitude, logintude, room }) => {
-    io.to(room).emit('userLocation', {
+  socket.on('sendLocation', ({ latitude, logintude}) => {
+    const user = Users.getUser({ id: socket.id })
+
+    io.to(user.room).emit('userLocation', {
       clientId: socket.id,
       location: { latitude, logintude }
     })
-  })
-
-  socket.on('join', ({ username, room }) => {
-
-    socket.join(room)
-
-    socket.emit('message', Messages.generateMessage('Welcome'))
-    socket.broadcast.to(room).emit('message', Messages.generateMessage(`${username} has joined !`))
 
   })
 
-  socket.on("disconnect", ({room}) => {
-    io.to(room).emit('userLeft', {
+  socket.on("disconnect", () => {
+    const user = Users.getUser({ id: socket.id })
+
+    io.to(user.room).emit('userLeft', {
       message: 'A new user has joined',
       username: 'user',
       clientId: socket.id
     });
+    
+    Users.removeUser({id:socket.id})
+
   })
 
 });
