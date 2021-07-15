@@ -39,7 +39,7 @@ io.on("connect", (socket) => {
 
   socket.on('sendMessage', (data, callback) => {
 
-    const { clientId, message, username } = data
+    const { message } = data
 
     const user = Users.getUser({ id: socket.id })
 
@@ -50,6 +50,7 @@ io.on("connect", (socket) => {
   })
 
   socket.on('sendLocation', ({ latitude, logintude}) => {
+    
     const user = Users.getUser({ id: socket.id })
 
     io.to(user.room).emit('userLocation', {
